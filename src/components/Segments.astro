@@ -1,0 +1,31 @@
+---
+import type { Content } from '../i18n/uz'
+import Icon from './Icon.astro'
+import SectionHeader from './SectionHeader.astro'
+
+interface Props {
+  t: Content
+}
+const { t } = Astro.props
+---
+
+<section class="bg-white py-16 sm:py-24" aria-labelledby="segments-title">
+  <div class="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
+    <SectionHeader id="segments-title" eyebrow={t.segments.eyebrow} title={t.segments.title} />
+    <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        t.segments.items.map((item) => (
+          <article class="flex items-start gap-4 rounded-2xl border border-line p-5 transition-colors hover:border-brand/40">
+            <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-canvas text-ink-2">
+              <Icon name={item.icon} size={24} />
+            </span>
+            <div>
+              <h3 class="text-[17px] font-semibold text-ink">{item.title}</h3>
+              <p class="mt-1 text-[15px] leading-relaxed text-muted">{item.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

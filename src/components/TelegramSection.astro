@@ -1,0 +1,78 @@
+---
+import { Image } from 'astro:assets'
+
+import type { Content } from '../i18n/uz'
+import { demoCompany, type Screens } from '../screens'
+import CheckList from './CheckList.astro'
+import PhoneFrame from './PhoneFrame.astro'
+import SectionHeader from './SectionHeader.astro'
+
+interface Props {
+  t: Content
+  shots: Screens
+}
+const { t, shots } = Astro.props
+const phones = t.telegram.shots.map((shot) => ({
+  ...shot,
+  src: shots.mini[shot.key as keyof Screens['mini']],
+}))
+---
+
+<section
+  id="telegram"
+  class="relative overflow-hidden bg-night py-16 text-white sm:py-24"
+  aria-labelledby="telegram-title"
+>
+  <div class="night-glow pointer-events-none absolute inset-0"></div>
+  <div class="relative mx-auto w-full max-w-[1200px] px-4 sm:px-6">
+    <div class="grid items-end gap-8 lg:grid-cols-12 lg:gap-14">
+      <div class="lg:col-span-6">
+        <SectionHeader
+          id="telegram-title"
+          eyebrow={t.telegram.eyebrow}
+          title={t.telegram.title}
+          align="left"
+          tone="dark"
+        />
+        <p class="mt-4 text-[17px] leading-relaxed text-pretty text-white/70">{t.telegram.text}</p>
+      </div>
+      <div class="lg:col-span-6">
+        <CheckList items={t.telegram.bullets} tone="dark" />
+      </div>
+    </div>
+
+    <div
+      class="-mx-4 mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0"
+    >
+      {
+        phones.map((phone, index) => (
+          <figure
+            class:list={[
+              'w-[236px] shrink-0 snap-center sm:w-[260px] lg:w-auto',
+              index % 2 === 1 && 'lg:translate-y-8',
+            ]}
+          >
+            <PhoneFrame
+              title={demoCompany}
+              subtitle={t.telegram.frameSubtitle}
+              close={t.telegram.frameClose}
+            >
+              <Image
+                src={phone.src}
+                alt={phone.alt}
+                widths={[260, 390, 520, 780]}
+                sizes="(min-width: 1024px) 270px, 260px"
+                format="webp"
+                quality={80}
+                class="block h-auto w-full"
+              />
+            </PhoneFrame>
+            <figcaption class="mt-4 text-center text-[15px] font-medium text-white/80">
+              {phone.caption}
+            </figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </div>
+</section>

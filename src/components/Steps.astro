@@ -1,0 +1,31 @@
+---
+import type { Content } from '../i18n/uz'
+import SectionHeader from './SectionHeader.astro'
+
+interface Props {
+  t: Content
+}
+const { t } = Astro.props
+---
+
+<section class="py-16 sm:py-24" aria-labelledby="steps-title">
+  <div class="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
+    <SectionHeader id="steps-title" eyebrow={t.steps.eyebrow} title={t.steps.title} />
+    <ol class="relative mt-12 grid gap-5 md:grid-cols-3">
+      <span
+        class="absolute top-6 right-[16%] left-[16%] hidden h-px bg-gradient-to-r from-brand/0 via-brand/40 to-brand/0 md:block"
+        aria-hidden="true"></span>
+      {
+        t.steps.items.map((step, index) => (
+          <li class="relative rounded-2xl border border-line bg-white p-6 text-center">
+            <span class="relative mx-auto -mt-12 mb-4 grid size-12 place-items-center rounded-full bg-brand text-[18px] font-bold text-white ring-8 ring-canvas">
+              {index + 1}
+            </span>
+            <h3 class="text-[18px] font-semibold text-ink">{step.title}</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-muted">{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

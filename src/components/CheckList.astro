@@ -1,0 +1,35 @@
+---
+import Icon from './Icon.astro'
+
+interface Props {
+  items: string[]
+  tone?: 'light' | 'dark'
+  class?: string
+}
+const { items, tone = 'light', class: className } = Astro.props
+---
+
+<ul class:list={['space-y-3', className]}>
+  {
+    items.map((item) => (
+      <li class="flex items-start gap-3">
+        <span
+          class:list={[
+            'mt-0.5 grid size-6 shrink-0 place-items-center rounded-full',
+            tone === 'dark' ? 'bg-white/10 text-[#8fb4ff]' : 'bg-brand-50 text-brand',
+          ]}
+        >
+          <Icon name="Check" size={14} strokeWidth={2.5} />
+        </span>
+        <span
+          class:list={[
+            'text-[16px] leading-relaxed',
+            tone === 'dark' ? 'text-white/85' : 'text-ink-2',
+          ]}
+        >
+          {item}
+        </span>
+      </li>
+    ))
+  }
+</ul>

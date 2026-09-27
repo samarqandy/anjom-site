@@ -1,0 +1,47 @@
+---
+/**
+ * The staff group as it looks in Telegram. The texts are the bot's real
+ * message templates with sample values, not copy written for the site.
+ */
+import Icon from './Icon.astro'
+
+interface Props {
+  title: string
+  subtitle: string
+  sender: string
+  messages: { text: string; time: string }[]
+}
+const { title, subtitle, sender, messages } = Astro.props
+
+function render(text: string): string {
+  const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return escaped.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>')
+}
+---
+
+<div
+  class="mx-auto w-full max-w-[520px] overflow-hidden rounded-3xl border border-line bg-white shadow-[0_30px_70px_-35px_rgba(15,23,40,0.45)]"
+>
+  <div class="flex items-center gap-3 border-b border-line px-4 py-3">
+    <span
+      class="grid size-10 place-items-center rounded-full bg-gradient-to-br from-[#63a4ff] to-brand text-white"
+    >
+      <Icon name="Users" size={19} />
+    </span>
+    <div class="min-w-0">
+      <p class="truncate text-[15px] font-semibold text-ink">{title}</p>
+      <p class="text-[12px] text-faint">{subtitle}</p>
+    </div>
+  </div>
+  <div class="tg-wall space-y-2.5 px-3 py-4 sm:px-4 sm:py-5">
+    {
+      messages.map((message) => (
+        <div class="w-fit max-w-[92%] rounded-2xl rounded-bl-md bg-white px-3.5 pt-2 pb-1.5 shadow-[0_1px_1px_rgba(0,0,0,0.12)]">
+          <p class="text-[13px] font-semibold text-[#2b7cd3]">{sender}</p>
+          <p class="mt-0.5 text-[14px] leading-[1.45] text-ink" set:html={render(message.text)} />
+          <p class="mt-0.5 text-right text-[11px] text-faint">{message.time}</p>
+        </div>
+      ))
+    }
+  </div>
+</div>

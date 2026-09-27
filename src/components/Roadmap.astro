@@ -1,0 +1,35 @@
+---
+import type { Content } from '../i18n/uz'
+import Icon from './Icon.astro'
+import SectionHeader from './SectionHeader.astro'
+
+interface Props {
+  t: Content
+}
+const { t } = Astro.props
+---
+
+<section class="bg-white py-16 sm:py-24" aria-labelledby="roadmap-title">
+  <div class="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
+    <SectionHeader
+      id="roadmap-title"
+      eyebrow={t.roadmap.eyebrow}
+      title={t.roadmap.title}
+      lead={t.roadmap.lead}
+    />
+    <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      {
+        t.roadmap.items.map((item) => (
+          <article class="rounded-2xl border border-dashed border-line bg-canvas/60 p-5">
+            <span class="grid size-10 place-items-center rounded-xl bg-white text-muted ring-1 ring-line">
+              <Icon name={item.icon} size={20} />
+            </span>
+            <h3 class="mt-4 text-[16px] font-semibold text-ink">{item.title}</h3>
+            <p class="mt-1.5 text-[14px] leading-relaxed text-muted">{item.text}</p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="mt-5 text-center text-[13px] text-faint">{t.roadmap.note}</p>
+  </div>
+</section>

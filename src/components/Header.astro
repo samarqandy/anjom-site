@@ -1,0 +1,117 @@
+---
+import { site } from '../config'
+import type { Content } from '../i18n/uz'
+import Icon from './Icon.astro'
+import Logo from './Logo.astro'
+
+interface Props {
+  t: Content
+}
+const { t } = Astro.props
+const home = t.path
+const links = [
+  { href: '#imkoniyatlar', label: t.nav.features },
+  { href: '#telegram', label: t.nav.telegram },
+  { href: '#tolov', label: t.nav.money },
+  { href: '#savollar', label: t.nav.faq },
+]
+---
+
+<header class="sticky top-0 z-40 border-b border-line/80 bg-white/85 backdrop-blur-md">
+  <div class="mx-auto flex h-16 w-full max-w-[1200px] items-center gap-4 px-4 sm:px-6">
+    <a href={home} class="flex items-center gap-2.5" aria-label={site.name}>
+      <Logo />
+    </a>
+
+    <nav class="ml-6 hidden items-center gap-1 lg:flex" aria-label={t.nav.menu}>
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class="rounded-lg px-3 py-2 text-[15px] text-ink-2 transition-colors hover:bg-canvas hover:text-ink"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2">
+      <a
+        href={t.nav.switchHref}
+        hreflang={t.lang === 'uz' ? 'ru' : 'uz'}
+        lang={t.lang === 'uz' ? 'ru' : 'uz'}
+        title={t.nav.switchLabel}
+        aria-label={t.nav.switchLabel}
+        class="grid h-9 min-w-9 place-items-center rounded-lg border border-line px-2 text-[13px] font-semibold text-ink-2 transition-colors hover:border-brand hover:text-brand"
+      >
+        {t.nav.switchShort}
+      </a>
+      {
+        site.appUrl && (
+          <a
+            href={site.appUrl}
+            class="hidden h-9 items-center rounded-lg px-3 text-[15px] font-medium text-ink-2 hover:text-brand sm:inline-flex"
+          >
+            {t.nav.login}
+          </a>
+        )
+      }
+      <a
+        href="#ariza"
+        class="hidden h-9 items-center rounded-lg bg-brand px-4 text-[14px] font-semibold text-white shadow-sm transition-colors hover:bg-brand-600 sm:inline-flex"
+      >
+        {t.nav.cta}
+      </a>
+
+      <details class="group relative lg:hidden">
+        <summary
+          class="grid size-9 cursor-pointer place-items-center rounded-lg border border-line text-ink-2"
+          aria-label={t.nav.menu}
+        >
+          <Icon name="Menu" size={18} class="group-open:hidden" />
+          <Icon name="X" size={18} class="hidden group-open:block" />
+        </summary>
+        <div
+          class="absolute top-12 right-0 w-64 rounded-2xl border border-line bg-white p-2 shadow-[0_20px_50px_-20px_rgba(15,23,40,0.35)]"
+        >
+          {
+            links.map((link) => (
+              <a
+                href={link.href}
+                class="block rounded-xl px-3 py-2.5 text-[15px] text-ink-2 hover:bg-canvas"
+              >
+                {link.label}
+              </a>
+            ))
+          }
+          {
+            site.appUrl && (
+              <a
+                href={site.appUrl}
+                class="block rounded-xl px-3 py-2.5 text-[15px] text-ink-2 hover:bg-canvas"
+              >
+                {t.nav.login}
+              </a>
+            )
+          }
+          <a
+            href="#ariza"
+            class="mt-1 flex h-11 items-center justify-center rounded-xl bg-brand text-[15px] font-semibold text-white"
+          >
+            {t.nav.cta}
+          </a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Close the mobile menu once a link inside it is followed.
+  document.querySelectorAll('header details').forEach((menu) => {
+    menu.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) menu.removeAttribute('open')
+    })
+  })
+</script>

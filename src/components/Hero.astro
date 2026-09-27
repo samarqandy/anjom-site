@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets'
+
+import type { Content } from '../i18n/uz'
+import { demoCompany, type Screens } from '../screens'
+import BrowserFrame from './BrowserFrame.astro'
+import Icon from './Icon.astro'
+import PhoneFrame from './PhoneFrame.astro'
+
+interface Props {
+  t: Content
+  shots: Screens
+}
+const { t, shots } = Astro.props
+
+/* A few booking bars floating on the grid — the shaxmatka, abstracted. */
+const bars = [
+  { top: '13%', left: '2%', width: '9%', tone: 'bg-brand/15 border-brand/30' },
+  { top: '23%', left: '6%', width: '5%', tone: 'bg-[#f5a524]/15 border-[#f5a524]/40' },
+  { top: '38%', left: '2.5%', width: '6%', tone: 'bg-ok/10 border-ok/30' },
+  { top: '11%', right: '2%', width: '9%', tone: 'bg-ok/10 border-ok/30' },
+  { top: '26%', right: '5%', width: '6%', tone: 'bg-brand/15 border-brand/30' },
+  { top: '41%', right: '2%', width: '5%', tone: 'bg-[#f5a524]/15 border-[#f5a524]/40' },
+]
+---
+
+<section class="relative overflow-hidden">
+  <div class="glow pointer-events-none absolute inset-0 -z-10"></div>
+  <div class="board-grid pointer-events-none absolute inset-0 -z-10"></div>
+  <div class="pointer-events-none absolute inset-0 -z-10 hidden xl:block" aria-hidden="true">
+    {
+      bars.map((bar) => (
+        <span
+          class:list={['absolute h-7 rounded-md border', bar.tone]}
+          style={{ top: bar.top, left: bar.left, right: bar.right, width: bar.width }}
+        />
+      ))
+    }
+  </div>
+
+  <div class="mx-auto w-full max-w-[1200px] px-4 pt-12 text-center sm:px-6 sm:pt-20">
+    <p
+      class="inline-flex items-center gap-2 rounded-full border border-line bg-white/80 px-3.5 py-1.5 text-[13px] font-medium text-ink-2 shadow-sm"
+    >
+      <span class="size-2 rounded-full bg-ok"></span>
+      {t.hero.eyebrow}
+    </p>
+    <h1
+      class="mx-auto mt-5 max-w-[920px] text-[38px] leading-[1.04] font-extrabold tracking-[-0.035em] text-balance text-ink sm:text-[58px] lg:text-[68px]"
+    >
+      {t.hero.title}
+    </h1>
+    <p
+      class="mx-auto mt-5 max-w-[700px] text-[17px] leading-relaxed text-pretty text-muted sm:text-[19px]"
+    >
+      {t.hero.lead}
+    </p>
+
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a
+        href="#ariza"
+        class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand px-6 text-[16px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(31,95,214,0.7)] transition-colors hover:bg-brand-600 sm:w-auto"
+      >
+        {t.hero.primary}
+        <Icon name="ArrowRight" size={18} strokeWidth={2.25} />
+      </a>
+      <a
+        href="#imkoniyatlar"
+        class="inline-flex h-12 w-full items-center justify-center rounded-xl border border-line bg-white px-6 text-[16px] font-semibold text-ink transition-colors hover:border-brand/40 hover:text-brand sm:w-auto"
+      >
+        {t.hero.secondary}
+      </a>
+    </div>
+
+    <ul
+      class="mx-auto mt-7 flex max-w-[760px] flex-wrap justify-center gap-x-5 gap-y-2 text-[14px] text-muted"
+    >
+      {
+        t.hero.chips.map((chip) => (
+          <li class="flex items-center gap-1.5">
+            <Icon name="CircleCheck" size={16} class="text-ok" />
+            {chip}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="mx-auto mt-12 w-full max-w-[1200px] px-4 pb-16 sm:mt-16 sm:px-6 sm:pb-24">
+    <!--
+      On phones the Mini App hangs off the lower right of the board and the
+      margin below makes room for it; from lg up it sits on the frame's edge.
+    -->
+    <div class="relative mb-[48vw] sm:mb-[20vw] lg:mb-0">
+      <BrowserFrame label="ANJOM">
+        <Image
+          src={shots.board}
+          alt={t.hero.boardAlt}
+          widths={[640, 960, 1280, 1920, 2400]}
+          sizes="(min-width: 1200px) 1150px, calc(100vw - 32px)"
+          format="webp"
+          quality={82}
+          loading="eager"
+          fetchpriority="high"
+          class="block h-auto w-full"
+        />
+      </BrowserFrame>
+      <div
+        class="absolute top-[30%] right-3 w-[36%] sm:right-8 sm:w-[26%] lg:top-auto lg:right-[3%] lg:-bottom-10 lg:w-[250px] xl:right-[1%] xl:w-[270px]"
+      >
+        <PhoneFrame
+          title={demoCompany}
+          subtitle={t.telegram.frameSubtitle}
+          close={t.telegram.frameClose}
+        >
+          <Image
+            src={shots.mini.product}
+            alt={t.hero.phoneAlt}
+            widths={[270, 540, 810]}
+            sizes="(min-width: 1024px) 270px, 36vw"
+            format="webp"
+            quality={80}
+            loading="eager"
+            class="block h-auto w-full"
+          />
+        </PhoneFrame>
+      </div>
+    </div>
+  </div>
+</section>

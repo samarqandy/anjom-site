@@ -1,0 +1,109 @@
+---
+import type { Content, Mark } from '../i18n/uz'
+import Icon from './Icon.astro'
+import SectionHeader from './SectionHeader.astro'
+
+interface Props {
+  t: Content
+}
+const { t } = Astro.props
+const c = t.compare
+
+const markIcon: Record<Mark, string> = { yes: 'Check', partial: 'Minus', no: 'X' }
+const markTone: Record<Mark, string> = {
+  yes: 'bg-ok-soft text-ok',
+  partial: 'bg-warn-soft text-warn',
+  no: 'bg-canvas text-faint',
+}
+---
+
+<section class="py-16 sm:py-24" aria-labelledby="compare-title">
+  <div class="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
+    <SectionHeader id="compare-title" eyebrow={c.eyebrow} title={c.title} lead={c.lead} />
+
+    <ul class="mt-10 space-y-3 sm:hidden">
+      {
+        c.rows.map((row) => (
+          <li class="rounded-2xl border border-line bg-white p-4">
+            <p class="text-[15px] font-semibold text-ink">{row.label}</p>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              {row.values.map((mark, index) => (
+                <span
+                  class:list={[
+                    'flex items-center gap-2 rounded-xl px-2.5 py-2 text-[13px]',
+                    index === 0 ? 'bg-brand-50 font-semibold text-brand' : 'bg-canvas text-ink-2',
+                  ]}
+                >
+                  <span class:list={['grid size-5 shrink-0 place-items-center rounded-full', markTone[mark]]}>
+                    <Icon name={markIcon[mark]} size={12} strokeWidth={2.5} />
+                  </span>
+                  <span class="min-w-0 truncate">{c.columns[index]}</span>
+                  <span class="sr-only">— {c.legend[mark]}</span>
+                </span>
+              ))}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="relative mt-10 hidden overflow-x-auto rounded-2xl border border-line bg-white sm:block">
+      <table class="w-full min-w-[720px] border-collapse text-left">
+        <thead>
+          <tr class="border-b border-line">
+            <th scope="col" class="w-[34%] px-5 py-4"><span class="sr-only">{c.eyebrow}</span></th>
+            {
+              c.columns.map((column, index) => (
+                <th
+                  scope="col"
+                  class:list={[
+                    'px-3 py-4 text-center text-[14px] font-semibold',
+                    index === 0 ? 'bg-brand-50 text-brand' : 'text-ink-2',
+                  ]}
+                >
+                  {column}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            c.rows.map((row) => (
+              <tr class="border-b border-line last:border-b-0">
+                <th scope="row" class="px-5 py-4 text-[15px] font-medium text-ink">
+                  {row.label}
+                </th>
+                {row.values.map((mark, index) => (
+                  <td class:list={['px-3 py-4 text-center', index === 0 && 'bg-brand-50/60']}>
+                    <span
+                      class:list={['mx-auto grid size-7 place-items-center rounded-full', markTone[mark]]}
+                      title={c.legend[mark]}
+                    >
+                      <Icon name={markIcon[mark]} size={15} strokeWidth={2.5} />
+                      <span class="sr-only">{c.legend[mark]}</span>
+                    </span>
+                  </td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-muted">
+      {
+        (['yes', 'partial', 'no'] as Mark[]).map((mark) => (
+          <span class="flex items-center gap-1.5">
+            <span class:list={['grid size-5 place-items-center rounded-full', markTone[mark]]}>
+              <Icon name={markIcon[mark]} size={12} strokeWidth={2.5} />
+            </span>
+            {c.legend[mark]}
+          </span>
+        ))
+      }
+      <span class="text-faint sm:ml-auto">{c.note}</span>
+    </div>
+  </div>
+</section>

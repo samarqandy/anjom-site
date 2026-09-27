@@ -1,0 +1,28 @@
+---
+/**
+ * A Lucide icon, inlined at build time: no icon font, no request, nothing
+ * shipped to the browser but the <svg> itself.
+ */
+import * as icons from 'lucide-static'
+
+interface Props {
+  name: string
+  size?: number
+  strokeWidth?: number
+  class?: string
+}
+
+const { name, size = 20, strokeWidth = 1.75, class: className = '' } = Astro.props
+const source = (icons as Record<string, unknown>)[name]
+if (typeof source !== 'string') throw new Error(`Unknown icon: ${name}`)
+
+const svg = source
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace('<svg', '<svg aria-hidden="true" focusable="false"')
+  .replace(/width="24"/, `width="${size}"`)
+  .replace(/height="24"/, `height="${size}"`)
+  .replace(/stroke-width="2"/, `stroke-width="${strokeWidth}"`)
+  .replace(/class="([^"]*)"/, `class="$1 shrink-0 ${className}"`)
+---
+
+<Fragment set:html={svg} />
