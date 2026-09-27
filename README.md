@@ -67,11 +67,10 @@ Domen ahost.uz’da ro‘yxatdan o‘tgan, sayt esa Vercel’da ishlaydi. ahost.
 
 `@` uchun eski `A` yozuvni o‘chiring, hozir u ahost.uz serveriga qaraydi. DNS yangilanishi bir necha daqiqadan 24 soatgacha davom etadi. Shundan keyin Vercel HTTPS sertifikatini o‘zi chiqaradi va `www.anjom.uz` avtomatik `anjom.uz` ga yo‘naltiriladi.
 
-> **Muhim.** ANJOM tizimining o‘zi (admin panel, API, Telegram Mini App) serverga `anjom.uz` domeni bilan o‘rnatishga mo‘ljallangan edi (`deploy/vps/install.sh anjom.uz`). Asosiy domen saytga berilgani uchun tizimni **`app.anjom.uz`** kabi subdomenga o‘rnating:
+> **ANJOM tizimining o‘zi `app.anjom.uz` da ishlaydi** (admin panel, API, Telegram Mini App), `anjom.uz` esa shu sayt uchun. Saytdagi «Kirish» tugmasi `app.anjom.uz` ga olib boradi (`src/config.ts` → `appUrl`). Tizimni o‘rnatish:
 >
 > 1. ahost.uz’da `A app → server IP` yozuvini qo‘shing.
 > 2. Serverda `sudo bash deploy/vps/install.sh app.anjom.uz` ni ishga tushiring.
-> 3. `src/config.ts` dagi `appUrl` ga `https://app.anjom.uz` ni yozing.
 
 ## Skrinshotlar
 
