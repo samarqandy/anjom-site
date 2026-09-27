@@ -65,12 +65,13 @@ Domen ahost.uz’da ro‘yxatdan o‘tgan, sayt esa Vercel’da ishlaydi. ahost.
 | `A` | `@` | `76.76.21.21` |
 | `CNAME` | `www` | `cname.vercel-dns.com` |
 
-`@` uchun eski `A` yozuvni o‘chiring, hozir u ahost.uz serveriga qaraydi. DNS yangilanishi bir necha daqiqadan 24 soatgacha davom etadi. Shundan keyin Vercel HTTPS sertifikatini o‘zi chiqaradi va `www.anjom.uz` avtomatik `anjom.uz` ga yo‘naltiriladi.
+`@` uchun boshqa `A` yoki `AAAA` yozuv qolmasin, aks holda ba’zi tashrifchilar eski serverga tushadi. DNS yangilanishi bir necha daqiqadan 24 soatgacha davom etadi. Shundan keyin Vercel HTTPS sertifikatini o‘zi chiqaradi va `www.anjom.uz` avtomatik `anjom.uz` ga yo‘naltiriladi.
 
-> **ANJOM tizimining o‘zi `app.anjom.uz` da ishlaydi** (admin panel, API, Telegram Mini App), `anjom.uz` esa shu sayt uchun. Saytdagi «Kirish» tugmasi `app.anjom.uz` ga olib boradi (`src/config.ts` → `appUrl`). Tizimni o‘rnatish:
+> **ANJOM tizimining o‘zi `app.anjom.uz` da ishlaydi** (admin panel, API, Telegram Mini App), `anjom.uz` esa shu sayt uchun. Tizimni o‘rnatish:
 >
 > 1. ahost.uz’da `A app → server IP` yozuvini qo‘shing.
 > 2. Serverda `sudo bash deploy/vps/install.sh app.anjom.uz` ni ishga tushiring.
+> 3. `app.anjom.uz` ochilgach, `src/config.ts` da `appUrl: 'https://app.anjom.uz'` deb yozing. Shunda saytda «Kirish» tugmasi chiqadi. Tizim ishga tushguncha tugma yashirin turadi, aks holda u ochilmaydigan manzilga olib borardi.
 
 ## Skrinshotlar
 

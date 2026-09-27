@@ -8,8 +8,11 @@ export const site = {
   url: 'https://anjom.uz',
   name: 'ANJOM',
 
-  /** The ANJOM panel staff sign in to. Empty hides «Kirish». */
-  appUrl: 'https://app.anjom.uz',
+  /**
+   * The ANJOM panel staff sign in to. Empty hides «Kirish»: it stays empty
+   * until the panel is live, then becomes 'https://app.anjom.uz'.
+   */
+  appUrl: '',
 
   contacts: {
     /** Telegram username without the @, e.g. 'anjom_uz'. */
