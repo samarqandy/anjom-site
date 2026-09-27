@@ -1,0 +1,39 @@
+---
+/**
+ * A phone with Telegram's Mini App header on top, so the screenshot reads as
+ * "inside Telegram" rather than as a web page.
+ */
+interface Props {
+  title: string
+  subtitle: string
+  close: string
+  class?: string
+}
+const { title, subtitle, close, class: className } = Astro.props
+---
+
+<div
+  class:list={[
+    'rounded-[2.4rem] bg-[#0d1424] p-[9px] shadow-[0_30px_60px_-25px_rgba(8,15,35,0.55)] ring-1 ring-white/10',
+    className,
+  ]}
+>
+  <!-- @container: a phone drawn 130px wide drops the side buttons, not the title. -->
+  <div class="@container overflow-hidden rounded-[1.9rem] bg-white">
+    <div
+      class="flex items-center justify-center gap-2 border-b border-black/5 bg-white px-2.5 pt-2.5 pb-2 @min-[200px]:justify-between @min-[200px]:px-3.5 @min-[200px]:pt-3"
+    >
+      <span class="hidden text-[11px] font-medium text-[#2b7cd3] @min-[200px]:inline">{close}</span>
+      <span class="min-w-0 text-center leading-tight">
+        <span class="block truncate text-[10px] font-semibold text-ink @min-[200px]:text-[12px]"
+          >{title}</span
+        >
+        <span class="block text-[9px] text-faint @min-[200px]:text-[10px]">{subtitle}</span>
+      </span>
+      <span class="hidden text-[15px] leading-none text-faint @min-[200px]:inline" aria-hidden="true"
+        >⋯</span
+      >
+    </div>
+    <slot />
+  </div>
+</div>

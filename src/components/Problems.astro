@@ -1,0 +1,47 @@
+---
+import type { Content } from '../i18n/uz'
+import Icon from './Icon.astro'
+import SectionHeader from './SectionHeader.astro'
+
+interface Props {
+  t: Content
+}
+const { t } = Astro.props
+---
+
+<section class="py-16 sm:py-24" aria-labelledby="muammolar-title">
+  <div class="mx-auto w-full max-w-[1200px] px-4 sm:px-6">
+    <SectionHeader id="muammolar-title" eyebrow={t.problems.eyebrow} title={t.problems.title} />
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        t.problems.items.map((item) => (
+          <article class="flex gap-4 rounded-2xl border border-line bg-white p-5 sm:block sm:p-6">
+            <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-warn-soft text-warn">
+              <Icon name={item.icon} size={22} />
+            </span>
+            <div>
+              <h3 class="text-[17px] font-semibold text-ink sm:mt-4 sm:text-[18px]">{item.title}</h3>
+              <p class="mt-1.5 text-[15px] leading-relaxed text-muted sm:mt-2">{item.text}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div
+      class="mt-6 flex flex-col items-start gap-5 rounded-2xl bg-brand p-6 text-white sm:flex-row sm:items-center sm:justify-between sm:p-8"
+    >
+      <p class="max-w-[760px] text-[18px] leading-snug font-semibold text-pretty sm:text-[21px]">
+        {t.problems.closing}
+      </p>
+      <a
+        href="#imkoniyatlar"
+        class="inline-flex h-11 shrink-0 items-center gap-2 rounded-xl bg-white px-5 text-[15px] font-semibold text-brand transition-colors hover:bg-brand-50"
+      >
+        {t.problems.closingCta}
+        <Icon name="ArrowDown" size={17} strokeWidth={2.25} />
+      </a>
+    </div>
+  </div>
+</section>

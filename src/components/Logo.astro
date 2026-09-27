@@ -1,0 +1,26 @@
+---
+interface Props {
+  tone?: 'light' | 'dark'
+  size?: number
+}
+const { tone = 'light', size = 32 } = Astro.props
+---
+
+<span class="flex items-center gap-2.5">
+  <svg width={size} height={size} viewBox="0 0 36 36" aria-hidden="true">
+    <rect width="36" height="36" rx="10" fill="#1f5fd6"></rect>
+    <path
+      d="M11.5 26.5 18 9.5l6.5 17M14.2 20.8h7.6"
+      fill="none"
+      stroke="#fff"
+      stroke-width="3.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+  <span
+    class:list={[
+      'text-[17px] font-bold tracking-[0.04em]',
+      tone === 'dark' ? 'text-white' : 'text-ink',
+    ]}>ANJOM</span
+  >
+</span>

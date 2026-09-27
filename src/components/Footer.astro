@@ -1,0 +1,41 @@
+---
+import { site } from '../config'
+import type { Content } from '../i18n/uz'
+import Logo from './Logo.astro'
+
+interface Props {
+  t: Content
+}
+const { t } = Astro.props
+const year = new Date().getFullYear()
+---
+
+<footer class="bg-night text-white">
+  <div class="mx-auto w-full max-w-[1200px] px-4 py-12 sm:px-6">
+    <div class="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <Logo tone="dark" />
+        <p class="mt-3 max-w-[320px] text-[15px] text-white/60">{t.footer.tagline}</p>
+      </div>
+      <nav class="flex flex-wrap gap-x-6 gap-y-2 text-[15px] text-white/70" aria-label={t.nav.menu}>
+        <a href="#imkoniyatlar" class="hover:text-white">{t.nav.features}</a>
+        <a href="#telegram" class="hover:text-white">{t.nav.telegram}</a>
+        <a href="#tolov" class="hover:text-white">{t.nav.money}</a>
+        <a href="#savollar" class="hover:text-white">{t.nav.faq}</a>
+        {site.appUrl && <a href={site.appUrl} class="hover:text-white">{t.nav.login}</a>}
+        <a
+          href={t.nav.switchHref}
+          hreflang={t.lang === 'uz' ? 'ru' : 'uz'}
+          lang={t.lang === 'uz' ? 'ru' : 'uz'}
+          class="hover:text-white">{t.nav.switchLabel}</a
+        >
+      </nav>
+    </div>
+    <div
+      class="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-[13px] text-white/45 sm:flex-row sm:justify-between"
+    >
+      <p>© {year} {site.name}. {t.footer.rights}</p>
+      <p>{t.footer.country}</p>
+    </div>
+  </div>
+</footer>

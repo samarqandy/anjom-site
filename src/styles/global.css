@@ -1,0 +1,110 @@
+@import 'tailwindcss';
+
+/*
+ * The palette is the product's own: the same blue as the ANJOM panel, so the
+ * site and the screenshots on it read as one thing.
+ */
+@theme {
+  --font-sans: 'Onest Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-brand: #1f5fd6;
+  --color-brand-600: #1a51b8;
+  --color-brand-700: #153f8f;
+  --color-brand-50: #eef4fd;
+  --color-brand-100: #dbe7fb;
+
+  --color-ink: #0f1728;
+  --color-ink-2: #2b3547;
+  --color-muted: #566174;
+  --color-faint: #8a94a4;
+  --color-line: #e3e8ef;
+  --color-canvas: #f6f8fb;
+
+  --color-ok: #0f7a4f;
+  --color-ok-soft: #e1f4eb;
+  --color-warn: #a86608;
+  --color-warn-soft: #fdf1dd;
+  --color-danger: #c73a33;
+  --color-danger-soft: #fdecea;
+
+  --color-night: #0b1630;
+  --color-night-2: #12214a;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* The planning-board grid behind the hero, fading out towards the edges. */
+.board-grid {
+  background-image:
+    linear-gradient(to right, rgb(31 95 214 / 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(31 95 214 / 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, #000 35%, transparent 100%);
+}
+
+.glow {
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgb(31 95 214 / 0.16), transparent 70%),
+    radial-gradient(40% 35% at 85% 10%, rgb(245 165 36 / 0.1), transparent 70%);
+}
+
+.night-glow {
+  background:
+    radial-gradient(55% 60% at 15% 0%, rgb(85 144 245 / 0.28), transparent 70%),
+    radial-gradient(45% 50% at 90% 100%, rgb(34 158 217 / 0.22), transparent 70%);
+}
+
+/* Telegram's chat wallpaper, roughly: a soft green-grey with a faint pattern. */
+.tg-wall {
+  background-color: #cfd9c7;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgb(255 255 255 / 0.35) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgb(255 255 255 / 0.3) 0 1.5px, transparent 2.5px),
+    linear-gradient(160deg, #d7e3c8, #bfd3c1 55%, #b5cdc6);
+  background-size:
+    38px 38px,
+    52px 52px,
+    100% 100%;
+}
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}

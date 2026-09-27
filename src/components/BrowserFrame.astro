@@ -1,0 +1,28 @@
+---
+interface Props {
+  label?: string
+  class?: string
+}
+const { label, class: className } = Astro.props
+---
+
+<div
+  class:list={[
+    'overflow-hidden rounded-2xl border border-line bg-white shadow-[0_30px_80px_-30px_rgba(15,23,40,0.35)]',
+    className,
+  ]}
+>
+  <div class="relative flex h-8 items-center gap-1.5 border-b border-line bg-[#f2f4f8] px-3.5 sm:h-9">
+    <span class="size-2.5 rounded-full bg-[#ff5f57]"></span>
+    <span class="size-2.5 rounded-full bg-[#febc2e]"></span>
+    <span class="size-2.5 rounded-full bg-[#28c840]"></span>
+    {
+      label && (
+        <span class="absolute left-1/2 hidden -translate-x-1/2 rounded-md border border-line bg-white px-3 py-0.5 text-[11px] text-faint sm:block">
+          {label}
+        </span>
+      )
+    }
+  </div>
+  <slot />
+</div>

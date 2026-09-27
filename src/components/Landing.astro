@@ -1,0 +1,129 @@
+---
+import { Image } from 'astro:assets'
+
+import type { Content } from '../i18n/uz'
+import Layout from '../layouts/Layout.astro'
+import { screens } from '../screens'
+import BrowserFrame from './BrowserFrame.astro'
+import Compare from './Compare.astro'
+import Contact from './Contact.astro'
+import Faq from './Faq.astro'
+import Features from './Features.astro'
+import Footer from './Footer.astro'
+import Header from './Header.astro'
+import Hero from './Hero.astro'
+import Icon from './Icon.astro'
+import Problems from './Problems.astro'
+import Roadmap from './Roadmap.astro'
+import Segments from './Segments.astro'
+import Showcase from './Showcase.astro'
+import Steps from './Steps.astro'
+import TelegramChat from './TelegramChat.astro'
+import TelegramSection from './TelegramSection.astro'
+
+interface Props {
+  t: Content
+}
+const { t } = Astro.props
+const shots = screens[t.lang]
+const shotSizes = '(min-width: 1200px) 680px, (min-width: 1024px) 56vw, calc(100vw - 32px)'
+---
+
+<Layout t={t}>
+  <Header t={t} />
+  <main>
+    <Hero t={t} shots={shots} />
+    <Problems t={t} />
+    <Features t={t} />
+
+    <Showcase
+      id="shaxmatka"
+      eyebrow={t.board.eyebrow}
+      title={t.board.title}
+      text={t.board.text}
+      bullets={t.board.bullets}
+    >
+      <BrowserFrame>
+        <Image
+          src={shots.boardGrid}
+          alt={t.board.alt}
+          widths={[640, 960, 1360, 1800]}
+          sizes={shotSizes}
+          format="webp"
+          quality={82}
+          class="block h-auto w-full"
+        />
+      </BrowserFrame>
+    </Showcase>
+
+    <TelegramSection t={t} shots={shots} />
+
+    <Showcase
+      id="tolov"
+      eyebrow={t.money.eyebrow}
+      title={t.money.title}
+      text={t.money.text}
+      bullets={t.money.bullets}
+      reverse
+    >
+      <div slot="after" class="mt-8 flex gap-4 rounded-2xl border border-ok/20 bg-ok-soft/70 p-5">
+        <Icon name="ShieldCheck" size={24} class="mt-0.5 text-ok" />
+        <div>
+          <p class="text-[16px] font-semibold text-ink">{t.money.note.title}</p>
+          <p class="mt-1 text-[15px] leading-relaxed text-ink-2">{t.money.note.text}</p>
+        </div>
+      </div>
+      <BrowserFrame>
+        <Image
+          src={shots.order}
+          alt={t.money.alt}
+          widths={[640, 960, 1360, 1800]}
+          sizes={shotSizes}
+          format="webp"
+          quality={82}
+          class="block h-auto w-full"
+        />
+      </BrowserFrame>
+    </Showcase>
+
+    <Showcase
+      id="hisobotlar"
+      eyebrow={t.reports.eyebrow}
+      title={t.reports.title}
+      text={t.reports.text}
+      bullets={t.reports.bullets}
+      class="bg-white"
+    >
+      <BrowserFrame>
+        <Image
+          src={shots.reports}
+          alt={t.reports.alt}
+          widths={[640, 960, 1360, 1800]}
+          sizes={shotSizes}
+          format="webp"
+          quality={82}
+          class="block h-auto w-full"
+        />
+      </BrowserFrame>
+    </Showcase>
+
+    <Showcase
+      id="jamoa"
+      eyebrow={t.team.eyebrow}
+      title={t.team.title}
+      text={t.team.text}
+      bullets={t.team.bullets}
+      reverse
+    >
+      <TelegramChat {...t.team.chat} />
+    </Showcase>
+
+    <Compare t={t} />
+    <Segments t={t} />
+    <Steps t={t} />
+    <Roadmap t={t} />
+    <Faq t={t} />
+    <Contact t={t} />
+  </main>
+  <Footer t={t} />
+</Layout>
