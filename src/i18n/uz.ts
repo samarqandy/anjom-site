@@ -125,12 +125,12 @@ export const uz = {
       {
         icon: 'Truck',
         title: 'Yetkazib berish',
-        text: 'Reyslar, haydovchilar va manzillar: kim, qachon, nimani olib borishi aniq.',
+        text: 'Reyslar va manzillar tartibi. Haydovchi reysni Telegram’da oladi va har bir yetkazishni rasm va joylashuv bilan tasdiqlaydi.',
       },
       {
         icon: 'UserCheck',
         title: 'Mijozlar va ishonch',
-        text: 'Har bir mijozning tarixi va ishonchlilik reytingi. Qora ro‘yxat va ijara xizmatlari o‘rtasida ishonch tarmog‘i.',
+        text: 'Har bir mijozning tarixi, ishonchlilik reytingi va qora ro‘yxat. Kechikkan buyumni tizimning o‘zi eslatadi.',
       },
       {
         icon: 'ChartColumn',
@@ -175,7 +175,7 @@ export const uz = {
     bullets: [
       'Katalog, narxlar va bo‘sh kunlar kalendari',
       'Band qilish, to‘lash va muddatni uzaytirish — mijozning o‘zi',
-      'Ijara shartlarini ilovada o‘qib, qabul qiladi',
+      'Ijara shartlari bilan ilovada tanishadi, ko‘p so‘raladigan savollarga javob ham shu yerda',
       'Buyurtma holati haqida xabarlar o‘zbek yoki rus tilida',
     ],
     frameClose: 'Yopish',
@@ -189,7 +189,7 @@ export const uz = {
       {
         key: 'orders',
         caption: 'To‘lash va uzaytirish',
-        alt: 'Mijoz buyurtmalari: ijarani va garovni to‘lash, shartlarni qabul qilish, uzaytirish',
+        alt: 'Mijoz buyurtmalari: ijarani va garovni to‘lash, shartlar bilan tanishish, uzaytirish',
       },
       {
         key: 'extend',
@@ -198,8 +198,8 @@ export const uz = {
       },
       {
         key: 'terms',
-        caption: 'Shartlarni qabul qilish',
-        alt: 'Ijara shartlari matni va «Shartlarni qabul qilaman» tugmasi',
+        caption: 'Shartlar bilan tanishish',
+        alt: 'Ijara shartlari matni va «Tanishib chiqdim» tugmasi',
       },
     ],
   },
@@ -243,6 +243,7 @@ export const uz = {
     bullets: [
       'Guruh bir martalik kod bilan ulanadi',
       'Rollar: egasi, menejer, omborchi, sotuvchi, haydovchi',
+      'Kechikkan qaytarish: 1 soatdan keyin mijozga eslatma, 1 kundan keyin — sizga',
       'Har bir harakat jurnalda: kim, qachon, nimani o‘zgartirdi',
     ],
     chat: {
@@ -265,6 +266,10 @@ export const uz = {
         {
           text: '⚠️ **A2609-00005** buyurtmasi muddati o‘tdi (muddat 27.09, 14:00)\n👤 Dilnoza Rahimova',
           time: '14:05',
+        },
+        {
+          text: '✅ **A2609-00014** · yetkazish — bajarildi · 15:32\n🚚 Jasur Norov\n📍 Xaritada · manzildan 40 m\n📷 Rasmlar: 2',
+          time: '15:32',
         },
       ],
     },
@@ -291,8 +296,8 @@ export const uz = {
       },
       { label: 'Garov va qarzlar hisobi', values: ['yes', 'yes', 'partial', 'no'] as Mark[] },
       {
-        label: 'Ijara xizmatlari o‘rtasida ishonch tarmog‘i',
-        values: ['yes', 'no', 'no', 'no'] as Mark[],
+        label: 'Haydovchi Telegram’da: rasm va joylashuv bilan tasdiq',
+        values: ['yes', 'partial', 'partial', 'no'] as Mark[],
       },
     ],
     legend: { yes: 'bor', partial: 'qisman', no: 'yo‘q' },
