@@ -1,19 +1,20 @@
 import type { APIRoute } from 'astro'
 
 import { site } from '../config'
+import { alternatesFor, publicPages } from '../seo'
 
-const pages = [
-  { path: '/', alt: '/ru', lang: 'uz', altLang: 'ru' },
-  { path: '/ru', alt: '/', lang: 'ru', altLang: 'uz' },
-]
+const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;')
 
 export const GET: APIRoute = () => {
-  const urls = pages
+  const urls = publicPages
     .map((page) => {
       const loc = new URL(page.path, site.url).toString()
-      const self = `<xhtml:link rel="alternate" hreflang="${page.lang}" href="${loc}"/>`
-      const other = `<xhtml:link rel="alternate" hreflang="${page.altLang}" href="${new URL(page.alt, site.url)}"/>`
-      return `  <url><loc>${loc}</loc>${self}${other}</url>`
+      const links = alternatesFor(page.path)
+        // x-default is for the <head>; the sitemap pairs real languages only.
+        .filter((alt) => alt.hreflang !== 'x-default')
+        .map((alt) => `<xhtml:link rel="alternate" hreflang="${alt.hreflang}" href="${escape(alt.href)}"/>`)
+        .join('')
+      return `  <url><loc>${escape(loc)}</loc>${links}</url>`
     })
     .join('\n')
   const body = `<?xml version="1.0" encoding="UTF-8"?>

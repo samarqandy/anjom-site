@@ -37,7 +37,7 @@ function render(text: string): string {
     {
       messages.map((message) => (
         <div class="w-fit max-w-[92%] rounded-2xl rounded-bl-md bg-white px-3.5 pt-2 pb-1.5 shadow-[0_1px_1px_rgba(0,0,0,0.12)]">
-          <p class="text-[13px] font-semibold text-[#2b7cd3]">{sender}</p>
+          <p class="text-[13px] font-semibold text-[#1f6bbd]">{sender}</p>
           <p class="mt-0.5 text-[14px] leading-[1.45] text-ink" set:html={render(message.text)} />
           <p class="mt-0.5 text-right text-[11px] text-faint">{message.time}</p>
         </div>

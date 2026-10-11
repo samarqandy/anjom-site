@@ -10,7 +10,7 @@
  * to have received anything.
  */
 
-const LIMITS = { name: 80, business: 80, message: 1000 }
+const LIMITS = { name: 80, business: 80, message: 1000, source: 80 }
 /** A human needs longer than this to type a name and a phone number. */
 const MIN_FILL_MS = 1500
 
@@ -69,8 +69,22 @@ export function parseLead(body) {
       business: clean(data.business, LIMITS.business),
       message: clean(data.message, LIMITS.message),
       lang: data.lang === 'ru' ? 'ru' : 'uz',
+      source: parseSource(data.source),
     },
   }
+}
+
+/** Where the visitor came from: short strings, kept only when present. */
+function parseSource(raw) {
+  const data = raw && typeof raw === 'object' ? raw : {}
+  const source = {}
+  for (const key of ['utm_source', 'utm_medium', 'utm_campaign', 'referrer']) {
+    const value = clean(data[key], LIMITS.source)
+    if (value) source[key] = value
+  }
+  const path = clean(data.path, LIMITS.source)
+  if (path.startsWith('/')) source.path = path
+  return source
 }
 
 export function formatLead(lead, now = new Date()) {
@@ -82,9 +96,15 @@ export function formatLead(lead, now = new Date()) {
     lead.business && `🏷 ${lead.business}`,
     lead.message && `💬 ${lead.message}`,
     `🌐 ${lead.lang.toUpperCase()} · ${when}`,
+    describeSource(lead.source),
   ]
     .filter(Boolean)
     .join('\n')
+}
+
+function describeSource(source = {}) {
+  const parts = Object.entries(source).map(([key, value]) => `${key}=${value}`)
+  return parts.length ? `📈 ${parts.join(' · ')}` : ''
 }
 
 export async function sendToTelegram(text, { token, chatId, fetchImpl = fetch }) {

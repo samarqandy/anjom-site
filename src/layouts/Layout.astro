@@ -1,8 +1,11 @@
 ---
 import '@fontsource-variable/onest'
 import '../styles/global.css'
+import fontLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url'
+import fontCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url'
 
 import { site } from '../config'
+import { alternatesFor } from '../seo'
 import type { Content } from '../i18n/uz'
 
 interface Props {
@@ -16,11 +19,10 @@ const { t, title = t.meta.title, description = t.meta.description, noindex = fal
   Astro.props
 
 const canonical = new URL(t.path, site.url).toString()
-const alternates = [
-  { hreflang: 'uz', href: new URL('/', site.url).toString() },
-  { hreflang: 'ru', href: new URL('/ru', site.url).toString() },
-  { hreflang: 'x-default', href: new URL('/', site.url).toString() },
-]
+const alternates = noindex ? [] : alternatesFor(t.path)
+// The subset the page is actually written in: it is the one that would otherwise
+// arrive after the first paint and move the text.
+const primaryFont = t.lang === 'ru' ? fontCyrillic : fontLatin
 const ogImage = new URL(`/og-${t.lang}.png`, site.url).toString()
 
 const structured = {
@@ -34,14 +36,26 @@ const structured = {
       logo: new URL('/logo.png', site.url).toString(),
     },
     {
+      '@type': 'WebSite',
+      '@id': `${site.url}/#website`,
+      name: site.name,
+      url: site.url,
+      inLanguage: ['uz', 'ru'],
+      publisher: { '@id': `${site.url}/#org` },
+    },
+    {
       '@type': 'SoftwareApplication',
+      '@id': `${canonical}#software`,
       name: site.name,
       url: canonical,
       applicationCategory: 'BusinessApplication',
       operatingSystem: 'Web, Telegram',
-      inLanguage: ['uz', 'ru'],
+      inLanguage: t.htmlLang,
       description,
+      // Only what the product does today; no price, rating or review is claimed.
+      featureList: t.meta.features,
       publisher: { '@id': `${site.url}/#org` },
+      isPartOf: { '@id': `${site.url}/#website` },
     },
   ],
 }
@@ -54,6 +68,8 @@ const structured = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {!noindex && <meta name="robots" content="index, follow, max-image-preview:large" />}
+    <link rel="preload" href={primaryFont} as="font" type="font/woff2" crossorigin />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     {
       !noindex &&
@@ -71,6 +87,7 @@ const structured = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={t.ogLocale} />
+    {!noindex && <meta property="og:locale:alternate" content={t.lang === 'uz' ? 'ru_RU' : 'uz_UZ'} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />

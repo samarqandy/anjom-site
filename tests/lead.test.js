@@ -40,7 +40,31 @@ describe('parseLead', () => {
       business: 'Qurilish',
       message: 'Salom',
       lang: 'uz',
+      source: {},
     })
+  })
+  it('keeps where the visitor came from, short and only when present', () => {
+    const { lead } = parseLead({
+      ...good,
+      source: {
+        utm_source: 'google',
+        utm_medium: 'organic',
+        utm_campaign: '',
+        referrer: 'www.google.com',
+        path: '/ru',
+        injected: 'ignored',
+      },
+    })
+    assert.deepEqual(lead.source, {
+      utm_source: 'google',
+      utm_medium: 'organic',
+      referrer: 'www.google.com',
+      path: '/ru',
+    })
+  })
+  it('ignores a malformed source and a path that is not a path', () => {
+    assert.deepEqual(parseLead({ ...good, source: 'x' }).lead.source, {})
+    assert.deepEqual(parseLead({ ...good, source: { path: 'evil' } }).lead.source, {})
   })
   it('treats the hidden field as a bot', () => {
     assert.deepEqual(parseLead({ ...good, website: 'http://spam' }), { spam: true })
@@ -69,6 +93,18 @@ describe('formatLead', () => {
       text,
       '🆕 Yangi ariza — anjom.uz\n👤 Aziz\n📞 +998901234567\n🌐 RU · 27.09.2026, 14:00:00',
     )
+  })
+  it('adds the source line only when there is one', () => {
+    const text = formatLead(
+      {
+        name: 'Aziz',
+        phone: '998901234567',
+        lang: 'uz',
+        source: { utm_source: 'google', referrer: 'www.google.com', path: '/' },
+      },
+      new Date('2026-09-27T09:00:00Z'),
+    )
+    assert.ok(text.endsWith('\n📈 utm_source=google · referrer=www.google.com · path=/'))
   })
 })
 

@@ -181,6 +181,27 @@ const field =
       }`
     }
 
+    // Where this visitor came from, so organic search can be told apart from
+    // everything else. It goes into the lead message in the owner's own Telegram
+    // chat — never to a third-party analytics service — and holds no personal data.
+    const whereFrom = () => {
+      const query = new URLSearchParams(location.search)
+      const pick = (key: string) => (query.get(key) ?? '').slice(0, 80)
+      let referrer = ''
+      try {
+        referrer = document.referrer ? new URL(document.referrer).hostname : ''
+      } catch {
+        /* an unparseable referrer is the same as none */
+      }
+      return {
+        utm_source: pick('utm_source'),
+        utm_medium: pick('utm_medium'),
+        utm_campaign: pick('utm_campaign'),
+        referrer: referrer === location.hostname ? '' : referrer,
+        path: location.pathname,
+      }
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault()
       const data = Object.fromEntries(new FormData(form)) as Record<string, string>
@@ -196,7 +217,7 @@ const field =
         const response = await fetch(form.action, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-          body: JSON.stringify({ ...data, elapsed: Date.now() - opened }),
+          body: JSON.stringify({ ...data, elapsed: Date.now() - opened, source: whereFrom() }),
         })
         if (response.ok) {
           show(form.dataset.success ?? '', true)

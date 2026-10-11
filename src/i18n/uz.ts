@@ -16,10 +16,21 @@ export const uz = {
   path: '/',
 
   meta: {
-    title: 'ANJOM — ijara biznesi uchun tizim: shaxmatka, Telegram vitrina, onlayn to‘lov',
+    title: 'Ijara biznesi uchun dastur — ANJOM: bandlov, Telegram, to‘lov',
     description:
-      'O‘zbekistondagi ijara xizmatlari uchun tizim: bandlov shaxmatkasi, mijozlar uchun Telegram vitrina, Payme va Click orqali to‘lov, garov, hujjatlar va hisobotlar.',
+      'O‘zbekistondagi ijara va prokat biznesi uchun dastur: bandlov shaxmatkasi, Telegram vitrina, garov hisobi, Payme va Click orqali to‘lov, hujjatlar va hisobotlar.',
     ogAlt: 'ANJOM — ijara biznesi uchun tizim',
+    features: [
+      'Bandlov shaxmatkasi: nima bo‘sh, nima band',
+      'Mijozlar uchun Telegram vitrina (Mini App)',
+      'Garov va to‘lovlar hisobi',
+      'Telegram orqali Payme va Click to‘lovi (kompaniya o‘z provayderini ulaganda)',
+      'Shartnoma va dalolatnoma PDF hujjatlari',
+      'Hisobotlar va CSV eksport',
+      'Yetkazish: haydovchi Telegram’da rasm va joylashuv bilan tasdiqlaydi',
+      'Kechikkan qaytarishlar haqida eslatmalar',
+      'Interfeys o‘zbek va rus tillarida',
+    ],
   },
 
   nav: {

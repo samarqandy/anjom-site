@@ -6,14 +6,16 @@ import Logo from './Logo.astro'
 
 interface Props {
   t: Content
+  /** Where the page anchors live: empty on the landing page itself, the page's path elsewhere (the 404 page). */
+  base?: string
 }
-const { t } = Astro.props
+const { t, base = '' } = Astro.props
 const home = t.path
 const links = [
-  { href: '#imkoniyatlar', label: t.nav.features },
-  { href: '#telegram', label: t.nav.telegram },
-  { href: '#tolov', label: t.nav.money },
-  { href: '#savollar', label: t.nav.faq },
+  { href: `${base}#imkoniyatlar`, label: t.nav.features },
+  { href: `${base}#telegram`, label: t.nav.telegram },
+  { href: `${base}#tolov`, label: t.nav.money },
+  { href: `${base}#savollar`, label: t.nav.faq },
 ]
 ---
 
@@ -42,7 +44,7 @@ const links = [
         hreflang={t.lang === 'uz' ? 'ru' : 'uz'}
         lang={t.lang === 'uz' ? 'ru' : 'uz'}
         title={t.nav.switchLabel}
-        aria-label={t.nav.switchLabel}
+        aria-label={`${t.nav.switchShort} — ${t.nav.switchLabel}`}
         class="grid h-9 min-w-9 place-items-center rounded-lg border border-line px-2 text-[13px] font-semibold text-ink-2 transition-colors hover:border-brand hover:text-brand"
       >
         {t.nav.switchShort}
@@ -58,7 +60,7 @@ const links = [
         )
       }
       <a
-        href="#ariza"
+        href={`${base}#ariza`}
         class="hidden h-9 items-center rounded-lg bg-brand px-4 text-[14px] font-semibold text-white shadow-sm transition-colors hover:bg-brand-600 sm:inline-flex"
       >
         {t.nav.cta}
@@ -96,7 +98,7 @@ const links = [
             )
           }
           <a
-            href="#ariza"
+            href={`${base}#ariza`}
             class="mt-1 flex h-11 items-center justify-center rounded-xl bg-brand text-[15px] font-semibold text-white"
           >
             {t.nav.cta}
