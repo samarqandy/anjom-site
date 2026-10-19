@@ -13,13 +13,23 @@ interface Props {
   title?: string
   description?: string
   noindex?: boolean
+  /** Canonical path of this page; the landing page's own path unless a page says otherwise. */
+  path?: string
+  /** The landing page describes the product in structured data; a plain page (privacy) does not. */
+  kind?: 'landing' | 'page'
 }
 
-const { t, title = t.meta.title, description = t.meta.description, noindex = false } =
-  Astro.props
+const {
+  t,
+  title = t.meta.title,
+  description = t.meta.description,
+  noindex = false,
+  path = t.path,
+  kind = 'landing',
+} = Astro.props
 
-const canonical = new URL(t.path, site.url).toString()
-const alternates = noindex ? [] : alternatesFor(t.path)
+const canonical = new URL(path, site.url).toString()
+const alternates = noindex ? [] : alternatesFor(path)
 // The subset the page is actually written in: it is the one that would otherwise
 // arrive after the first paint and move the text.
 const primaryFont = t.lang === 'ru' ? fontCyrillic : fontLatin
@@ -59,6 +69,8 @@ const structured = {
       inLanguage: ['uz', 'ru'],
       publisher: { '@id': `${site.url}/#org` },
     },
+    ...(kind === 'landing'
+      ? [
     {
       '@type': 'SoftwareApplication',
       '@id': `${canonical}#software`,
@@ -74,6 +86,8 @@ const structured = {
       creator: maker,
       isPartOf: { '@id': `${site.url}/#website` },
     },
+        ]
+      : []),
   ],
 }
 ---

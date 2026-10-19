@@ -1,0 +1,49 @@
+---
+import type { Content } from '../i18n/uz'
+import Layout from '../layouts/Layout.astro'
+import Footer from './Footer.astro'
+import Header from './Header.astro'
+import Icon from './Icon.astro'
+import { company } from '../config'
+
+interface Props {
+  t: Content
+  /** The privacy page in the other language. */
+  switchHref: string
+}
+const { t, switchHref } = Astro.props
+const p = t.privacy
+// The company's own site is the one address in the text that is a link.
+const parts = (text: string) => text.split(company.url)
+---
+
+<Layout t={t} title={p.meta.title} description={p.meta.description} path={p.path} kind="page">
+  <Header t={t} base={t.path} switchHref={switchHref} />
+  <main class="mx-auto w-full max-w-[760px] px-4 py-12 sm:px-6 sm:py-16">
+    <a href={t.path} class="inline-flex items-center gap-2 text-[15px] font-medium text-ink-2 hover:text-brand">
+      <Icon name="ArrowLeft" size={16} strokeWidth={2.25} />
+      {p.back}
+    </a>
+    <h1 class="mt-6 text-[32px] leading-tight font-extrabold tracking-tight text-ink sm:text-[40px]">{p.title}</h1>
+    {
+      p.sections.map((section) => (
+        <section class="mt-8">
+          <h2 class="text-[20px] font-bold text-ink">{section.heading}</h2>
+          <p class="mt-2 text-[16px] leading-relaxed text-ink-2">
+            {parts(section.text).map((part, i, all) => (
+              <>
+                {part}
+                {i < all.length - 1 && (
+                  <a href={company.url} class="text-brand underline underline-offset-2">
+                    {company.url}
+                  </a>
+                )}
+              </>
+            ))}
+          </p>
+        </section>
+      ))
+    }
+  </main>
+  <Footer t={t} base={t.path} switchHref={switchHref} />
+</Layout>

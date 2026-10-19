@@ -8,8 +8,10 @@ interface Props {
   t: Content
   /** Where the page anchors live: empty on the landing page itself, the page's path elsewhere (the 404 page). */
   base?: string
+  /** The same page in the other language, when it is not the landing page. */
+  switchHref?: string
 }
-const { t, base = '' } = Astro.props
+const { t, base = '', switchHref = t.nav.switchHref } = Astro.props
 const home = t.path
 const links = [
   { href: `${base}#imkoniyatlar`, label: t.nav.features },
@@ -40,7 +42,7 @@ const links = [
 
     <div class="ml-auto flex items-center gap-2">
       <a
-        href={t.nav.switchHref}
+        href={switchHref}
         hreflang={t.lang === 'uz' ? 'ru' : 'uz'}
         lang={t.lang === 'uz' ? 'ru' : 'uz'}
         title={t.nav.switchLabel}

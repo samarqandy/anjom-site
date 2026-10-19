@@ -60,6 +60,9 @@ const PAGES = all(read('dist/sitemap.xml'), /<url>(.*?)<\/url>/gs).map((block) =
   return { file: fileFor(path), url, path, lang, htmlLang: lang === 'ru' ? 'ru' : 'uz-Latn', pair }
 })
 
+// The product's landing pages; every other public page is plain content.
+const isLanding = (page) => page.path === '/' || page.path === '/ru'
+
 describe('every public page', () => {
   for (const page of PAGES) {
     const html = () => read(page.file)
@@ -111,8 +114,10 @@ describe('every public page', () => {
       it('describes itself in valid, truthful structured data', () => {
         const json = JSON.parse(one(html(), /application\/ld\+json">([^<]*)</) ?? '{}')
         const types = json['@graph'].map((node) => node['@type'])
-        assert.deepEqual(types, ['Organization', 'WebSite', 'SoftwareApplication'])
+        // Only the landing page describes the product; a text page does not claim to be it.
+        assert.deepEqual(types, isLanding(page) ? ['Organization', 'WebSite', 'SoftwareApplication'] : ['Organization', 'WebSite'])
         const [org, , software] = json['@graph']
+        if (!isLanding(page)) return
         assert.equal(software.url, page.url)
         assert.ok(software.featureList.length >= 5)
         // No claim the product cannot back: a price, a rating or a review.
@@ -166,7 +171,7 @@ describe('every public page', () => {
 
       it('gives every image a text alternative', () => {
         const images = all(html(), /(<img[^>]*>)/g)
-        assert.ok(images.length > 0)
+        if (isLanding(page)) assert.ok(images.length > 0)
         for (const tag of images) assert.match(tag, /alt="[^"]+"/, tag)
       })
 
@@ -185,6 +190,52 @@ describe('every public page', () => {
       one(ru, /name="description" content="([^"]*)"/),
     )
   })
+})
+
+describe('privacy policy', () => {
+  const pages = {
+    uz: { file: 'dist/maxfiylik.html', url: `${SITE}/maxfiylik`, twin: `${SITE}/ru/konfidensialnost` },
+    ru: { file: 'dist/ru/konfidensialnost.html', url: `${SITE}/ru/konfidensialnost`, twin: `${SITE}/maxfiylik` },
+  }
+  const text = (file) => decode(read(file).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' '))
+
+  for (const [lang, page] of Object.entries(pages)) {
+    describe(page.url, () => {
+      it('is a public page, paired with its translation', () => {
+        const entry = PAGES.find((p) => p.url === page.url)
+        assert.ok(entry, 'in the sitemap')
+        assert.equal(entry.pair[lang === 'uz' ? 'ru' : 'uz'], page.twin)
+      })
+
+      it('switches language to its own translation, and keeps the menu on the landing page', () => {
+        const html = read(page.file)
+        const other = new URL(page.twin).pathname
+        assert.ok(html.includes(`href="${other}" hreflang="${lang === 'uz' ? 'ru' : 'uz'}"`))
+        const home = lang === 'uz' ? '/' : '/ru'
+        assert.ok(html.includes(`href="${home}#imkoniyatlar"`))
+        assert.ok(html.includes(`href="${home}#ariza"`))
+      })
+
+      it('says what is collected, why, for how long, and who to ask', () => {
+        const body = text(page.file)
+        for (const fact of ['utm_source', 'Google Analytics 4', '14', '+998 33 334 44 42', '@samsmartuz']) {
+          assert.ok(body.includes(fact), `${fact} is missing`)
+        }
+        assert.ok(body.includes(lang === 'ru' ? 'не более 1 года' : 'ko‘pi bilan 1 yil'))
+        assert.ok(body.includes(lang === 'ru' ? 'Дагбитская, 11, Самарканд' : 'Dahbed ko‘chasi 11, Samarqand'))
+        assert.match(read(page.file), /<a href="https:\/\/www\.samsmart\.uz"[^>]*>https:\/\/www\.samsmart\.uz<\/a>/)
+      })
+
+      it('is linked from the landing page footer and from the lead form', () => {
+        const landing = read(lang === 'uz' ? 'dist/index.html' : 'dist/ru.html')
+        const link = new URL(page.url).pathname
+        assert.match(one(landing, /(<footer.*<\/footer>)/s) ?? '', new RegExp(`<a href="${link}"`))
+        const form = one(landing, /(<form id="lead-form".*?<\/form>)/s) ?? ''
+        assert.match(form, new RegExp(`<a href="${link}"[^>]*>${lang === 'ru' ? 'Политика конфиденциальности' : 'Maxfiylik siyosati'}</a>`))
+        assert.ok(form.includes(lang === 'ru' ? 'связи с вами и улучшения сервиса' : 'xizmatni yaxshilash uchun ishlatiladi'))
+      })
+    })
+  }
 })
 
 describe('llms.txt', () => {

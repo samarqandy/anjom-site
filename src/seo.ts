@@ -30,6 +30,8 @@ export interface PublicPage {
 export const publicPages: PublicPage[] = [
   { path: '/', lang: 'uz', alternate: '/ru', title: uz.meta.title, description: uz.meta.description },
   { path: '/ru', lang: 'ru', alternate: '/', title: ru.meta.title, description: ru.meta.description },
+  { path: uz.privacy.path, lang: 'uz', alternate: ru.privacy.path, title: uz.privacy.meta.title, description: uz.privacy.meta.description },
+  { path: ru.privacy.path, lang: 'ru', alternate: uz.privacy.path, title: ru.privacy.meta.title, description: ru.privacy.meta.description },
 ]
 
 const absolute = (path: string) => new URL(path, site.url).toString()

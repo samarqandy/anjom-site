@@ -157,7 +157,7 @@ const field =
 
         <p class="mt-4 flex items-center gap-2 text-[13px] text-faint">
           <Icon name="Lock" size={14} />
-          {f.privacy}
+          <span>{f.privacy} {f.privacyMore} <a href={t.privacy.path} class="underline underline-offset-2 hover:text-ink">{t.privacy.linkLabel}</a>.</span>
         </p>
       </form>
     </div>

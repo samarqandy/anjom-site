@@ -471,7 +471,8 @@ export const uz = {
       success: 'Rahmat! Arizangiz qabul qilindi — tez orada bog‘lanamiz.',
       error: 'Yuborib bo‘lmadi. Iltimos, birozdan so‘ng qayta urinib ko‘ring.',
       invalid: 'Ism va telefon raqamini to‘g‘ri kiriting.',
-      privacy: 'Ma’lumotlaringiz faqat siz bilan bog‘lanish uchun ishlatiladi.',
+      privacy: 'Ma’lumotlaringiz siz bilan bog‘lanish va xizmatni yaxshilash uchun ishlatiladi.',
+      privacyMore: 'Batafsil:',
     },
   },
 
@@ -481,6 +482,48 @@ export const uz = {
     productAfter: ' mahsuloti',
     country: 'O‘zbekiston',
     rights: 'Barcha huquqlar himoyalangan.',
+  },
+
+  privacy: {
+    path: '/maxfiylik',
+    linkLabel: 'Maxfiylik siyosati',
+    meta: {
+      title: 'Maxfiylik siyosati — ANJOM',
+      description:
+        'ANJOM saytida qanday ma’lumot yig‘iladi: ariza formasi, tashrif manbasi, Google Analytics 4 cookie’lari, saqlash muddati va o‘chirish tartibi.',
+    },
+    title: 'Maxfiylik siyosati',
+    back: 'Bosh sahifa',
+    sections: [
+      {
+        heading: 'Kim javob beradi',
+        text: 'Anjom — SAM Smart Security Service mahsuloti (https://www.samsmart.uz). Manzil: Dahbed ko‘chasi 11, Samarqand. Telefon: +998 33 334 44 42. Telegram: @samsmartuz.',
+      },
+      {
+        heading: 'Ariza formasi',
+        text: 'Formani to‘ldirsangiz, ismingiz, telefon raqamingiz, biznes turi va xabaringizni qabul qilamiz. Ular siz bilan bog‘lanish va Anjom haqida javob berish uchun ishlatiladi.',
+      },
+      {
+        heading: 'Tashrif manbasi',
+        text: 'Forma yuborilganda qaysi kanal orqali kelganingizni ham yozib olamiz: reklama belgilari (utm_source, utm_medium, utm_campaign), oldingi sayt domeni va kirgan sahifangiz manzili. Maqsad — qaysi kanal ishlayotganini bilish va xizmatni yaxshilash. Bu ma’lumot sizni shaxsan aniqlash uchun ishlatilmaydi.',
+      },
+      {
+        heading: 'Cookie va analitika',
+        text: 'Saytda Google Analytics 4 ishlatiladi. U cookie’lar orqali tashriflar soni, ko‘rilgan sahifalar hamda telefon va Telegram havolalari, forma yuborish bosilishlarini hisoblaydi. Analitikaga ismingiz, telefon raqamingiz yoki xabaringiz yuborilmaydi. Cookie’larni brauzer sozlamalarida o‘chirishingiz mumkin; sayt bunda ham ishlaydi.',
+      },
+      {
+        heading: 'Uchinchi shaxslar',
+        text: 'Ma’lumotlaringiz sotilmaydi. Ariza bizga Telegram orqali yetkaziladi; analitika ma’lumotlarini Google qayta ishlaydi.',
+      },
+      {
+        heading: 'Saqlash muddati',
+        text: 'Ariza ma’lumotlari (ism, telefon, xabar) xizmat ko‘rsatish uchun kerak bo‘lgan muddat davomida, ko‘pi bilan 1 yil saqlanadi. Google Analytics 4 ma’lumotlari 14 oy saqlanadi.',
+      },
+      {
+        heading: 'Ma’lumotni o‘chirish',
+        text: 'Ma’lumotlaringizni muddatdan oldin o‘chirishni so‘rash uchun +998 33 334 44 42 raqamiga qo‘ng‘iroq qiling yoki Telegram’da @samsmartuz ga yozing.',
+      },
+    ],
   },
 
   notFound: {

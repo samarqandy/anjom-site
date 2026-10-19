@@ -6,8 +6,12 @@ import Logo from './Logo.astro'
 
 interface Props {
   t: Content
+  /** Where the page anchors live: empty on the landing page, the landing page's path elsewhere. */
+  base?: string
+  /** The same page in the other language, when it is not the landing page. */
+  switchHref?: string
 }
-const { t } = Astro.props
+const { t, base = '', switchHref = t.nav.switchHref } = Astro.props
 const year = new Date().getFullYear()
 const { telegram, phone, email } = site.contacts
 ---
@@ -53,13 +57,13 @@ const { telegram, phone, email } = site.contacts
         }
       </div>
       <nav class="flex flex-wrap gap-x-6 gap-y-2 text-[15px] text-white/70" aria-label={t.nav.menu}>
-        <a href="#imkoniyatlar" class="hover:text-white">{t.nav.features}</a>
-        <a href="#telegram" class="hover:text-white">{t.nav.telegram}</a>
-        <a href="#tolov" class="hover:text-white">{t.nav.money}</a>
-        <a href="#savollar" class="hover:text-white">{t.nav.faq}</a>
+        <a href={`${base}#imkoniyatlar`} class="hover:text-white">{t.nav.features}</a>
+        <a href={`${base}#telegram`} class="hover:text-white">{t.nav.telegram}</a>
+        <a href={`${base}#tolov`} class="hover:text-white">{t.nav.money}</a>
+        <a href={`${base}#savollar`} class="hover:text-white">{t.nav.faq}</a>
         {site.appUrl && <a href={site.appUrl} class="hover:text-white">{t.nav.login}</a>}
         <a
-          href={t.nav.switchHref}
+          href={switchHref}
           hreflang={t.lang === 'uz' ? 'ru' : 'uz'}
           lang={t.lang === 'uz' ? 'ru' : 'uz'}
           class="hover:text-white">{t.nav.switchLabel}</a
@@ -70,7 +74,10 @@ const { telegram, phone, email } = site.contacts
       class="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-[13px] text-white/60 sm:flex-row sm:justify-between"
     >
       <p>© {year} {site.name}. {t.footer.rights}</p>
-      <p>{t.footer.country}</p>
+      <p class="flex gap-4">
+        <a href={t.privacy.path} class="underline-offset-2 hover:text-white hover:underline">{t.privacy.linkLabel}</a>
+        <span>{t.footer.country}</span>
+      </p>
     </div>
   </div>
 </footer>
