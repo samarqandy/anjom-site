@@ -11,6 +11,8 @@
  * Never list a path that is private, parameterised or generated from data.
  */
 import { site } from './config'
+import { ru } from './i18n/ru'
+import { uz } from './i18n/uz'
 
 export type Lang = 'uz' | 'ru'
 
@@ -20,11 +22,14 @@ export interface PublicPage {
   lang: Lang
   /** Path of the same page in the other language, when one exists. */
   alternate?: string
+  /** What llms.txt calls the page and how it describes it. */
+  title: string
+  description: string
 }
 
 export const publicPages: PublicPage[] = [
-  { path: '/', lang: 'uz', alternate: '/ru' },
-  { path: '/ru', lang: 'ru', alternate: '/' },
+  { path: '/', lang: 'uz', alternate: '/ru', title: uz.meta.title, description: uz.meta.description },
+  { path: '/ru', lang: 'ru', alternate: '/', title: ru.meta.title, description: ru.meta.description },
 ]
 
 const absolute = (path: string) => new URL(path, site.url).toString()

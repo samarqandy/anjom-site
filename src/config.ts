@@ -16,12 +16,37 @@ export const site = {
 
   contacts: {
     /** Telegram username without the @, e.g. 'anjom_uz'. */
-    telegram: '',
+    telegram: 'samsmartuz',
     /** As it should be shown, e.g. '+998 90 123 45 67'. */
-    phone: '',
+    phone: '+998 33 334 44 42',
     email: '',
   },
 }
+
+/**
+ * The company that makes and sells ANJOM. Its phone and Telegram are the
+ * contacts above; what is here is what the footer, the structured data and
+ * llms.txt say about who stands behind the product.
+ */
+export const company = {
+  name: 'SAM Smart Security Service',
+  url: 'https://www.samsmart.uz',
+  country: 'UZ',
+  /** The address as written in each language of the site. */
+  address: {
+    uz: { street: 'Dahbed ko‘chasi 11', locality: 'Samarqand', text: 'Dahbed ko‘chasi 11, Samarqand' },
+    ru: { street: 'ул. Дагбитская, 11', locality: 'Самарканд', text: 'ул. Дагбитская, 11, Самарканд' },
+  },
+} as const
+
+/**
+ * Google Analytics 4 measurement id, from the PUBLIC_GA_ID environment
+ * variable (Astro exposes only PUBLIC_* to the browser; the id is public
+ * anyway). Anything that is not shaped like an id is ignored, so a typo in the
+ * environment cannot put a stray string into a <script>.
+ */
+const rawGaId = import.meta.env.PUBLIC_GA_ID ?? ''
+export const gaId: string = /^G-[A-Z0-9]{6,12}$/.test(rawGaId) ? rawGaId : ''
 
 export function telegramLink(username: string, text?: string): string {
   const base = `https://t.me/${username.replace(/^@/, '')}`

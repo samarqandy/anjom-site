@@ -477,6 +477,8 @@ export const uz = {
 
   footer: {
     tagline: 'Ijara biznesi uchun tizim.',
+    productBefore: '',
+    productAfter: ' mahsuloti',
     country: 'O‘zbekiston',
     rights: 'Barcha huquqlar himoyalangan.',
   },

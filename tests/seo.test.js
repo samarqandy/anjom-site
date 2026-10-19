@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { describe, it } from 'node:test'
 
 /**
@@ -16,7 +16,31 @@ const SITE = 'https://anjom.uz'
 // Build first, then derive the page list from what was actually built — the
 // sitemap — so a page added to the registry is checked without editing this
 // file. (Top level, because the describe blocks below need the list to exist.)
-execFileSync('npx', ['astro', 'build'], { stdio: 'ignore' })
+const build = (env = {}) =>
+  execFileSync('npx', ['astro', 'build'], {
+    stdio: 'ignore',
+    env: { ...process.env, PUBLIC_GA_ID: '', ...env },
+  })
+
+/** Everything a build emitted that a browser could run: pages and bundled scripts. */
+const emitted = () => {
+  const walk = (dir) =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+      entry.isDirectory() ? walk(`${dir}/${entry.name}`) : [`${dir}/${entry.name}`],
+    )
+  return walk('dist')
+    .filter((file) => /\.(html|js)$/.test(file))
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+}
+
+// Three builds, in this order: with a measurement id, with a malformed one, and
+// without (the default every other test below reads).
+build({ PUBLIC_GA_ID: 'G-NSE5CPZDTC' })
+const WITH_GA = { uz: readFileSync('dist/index.html', 'utf8'), all: emitted() }
+build({ PUBLIC_GA_ID: 'x"></script><script>alert(1)</script>' })
+const WITH_BAD_GA = readFileSync('dist/index.html', 'utf8')
+build()
 
 const read = (file) => readFileSync(file, 'utf8')
 const one = (html, pattern) => html.match(pattern)?.[1]
@@ -88,13 +112,49 @@ describe('every public page', () => {
         const json = JSON.parse(one(html(), /application\/ld\+json">([^<]*)</) ?? '{}')
         const types = json['@graph'].map((node) => node['@type'])
         assert.deepEqual(types, ['Organization', 'WebSite', 'SoftwareApplication'])
-        const software = json['@graph'][2]
+        const [org, , software] = json['@graph']
         assert.equal(software.url, page.url)
         assert.ok(software.featureList.length >= 5)
         // No claim the product cannot back: a price, a rating or a review.
         for (const forbidden of ['offers', 'aggregateRating', 'review']) {
           assert.equal(software[forbidden], undefined, `${forbidden} must not be invented`)
         }
+
+        // Who stands behind it: the company, with its address in the page's language.
+        const maker = { '@type': 'Organization', name: 'SAM Smart Security Service', url: 'https://www.samsmart.uz' }
+        assert.deepEqual(software.publisher, maker)
+        assert.deepEqual(software.creator, maker)
+        assert.equal(org.telephone, '+998 33 334 44 42')
+        const parent = org.parentOrganization
+        assert.equal(parent.name, maker.name)
+        assert.equal(parent.url, maker.url)
+        assert.equal(parent.telephone, '+998 33 334 44 42')
+        assert.equal(parent.address['@type'], 'PostalAddress')
+        assert.equal(parent.address.addressCountry, 'UZ')
+        assert.equal(
+          parent.address.streetAddress,
+          page.lang === 'ru' ? 'ул. Дагбитская, 11' : 'Dahbed ko‘chasi 11',
+        )
+        assert.equal(parent.address.addressLocality, page.lang === 'ru' ? 'Самарканд' : 'Samarqand')
+      })
+
+      it('names its maker in the footer, with a plain link, and gives a phone and Telegram', () => {
+        const footer = one(html(), /(<footer.*<\/footer>)/s) ?? ''
+        const product = page.lang === 'ru' ? 'Продукт ' : ''
+        const after = page.lang === 'ru' ? '' : ' mahsuloti'
+        assert.match(
+          footer,
+          new RegExp(
+            `${product}<a href="https://www\\.samsmart\\.uz"[^>]*>SAM Smart Security Service</a>${after}`,
+          ),
+        )
+        assert.doesNotMatch(footer.match(/<a href="https:\/\/www\.samsmart\.uz"[^>]*>/)[0], /nofollow/)
+        assert.match(footer, /href="tel:\+998333344442"/)
+        assert.match(footer, /href="https:\/\/t\.me\/samsmartuz"/)
+      })
+
+      it('loads no analytics unless a measurement id is configured', () => {
+        assert.doesNotMatch(html(), /googletagmanager|gtag\(/)
       })
 
       it('has social metadata with an image that exists', () => {
@@ -124,6 +184,63 @@ describe('every public page', () => {
       one(uz, /name="description" content="([^"]*)"/),
       one(ru, /name="description" content="([^"]*)"/),
     )
+  })
+})
+
+describe('llms.txt', () => {
+  const credit =
+    'Developed by SAM Smart Security Service (https://www.samsmart.uz), Samarqand, +998 33 334 44 42'
+
+  for (const [lang, file] of [['uz', 'dist/llms.txt'], ['ru', 'dist/ru/llms.txt']]) {
+    describe(file, () => {
+      const text = () => read(file)
+
+      it('is plain text that starts with the product and ends with the maker credit', () => {
+        assert.match(text(), /^# ANJOM\n\n> /)
+        assert.equal(text().trimEnd().split('\n').at(-1), credit)
+        assert.ok(text().endsWith('\n'))
+      })
+
+      it('lists exactly this language\'s public pages, from the sitemap', () => {
+        const listed = all(text(), /^- \[[^\]]+\]\((https:\/\/anjom\.uz[^)]*)\):/gm).sort()
+        const expected = PAGES.filter((p) => p.lang === lang).map((p) => p.url).sort()
+        assert.deepEqual(listed, expected)
+      })
+
+      it('links the other language and gives the real contacts', () => {
+        const other = lang === 'uz' ? 'https://anjom.uz/ru/llms.txt' : 'https://anjom.uz/llms.txt'
+        assert.ok(text().includes(other))
+        assert.ok(text().includes('+998 33 334 44 42'))
+        assert.ok(text().includes('https://t.me/samsmartuz'))
+        assert.ok(text().includes('[SAM Smart Security Service](https://www.samsmart.uz)'))
+        assert.ok(text().includes(lang === 'ru' ? 'ул. Дагбитская, 11, Самарканд' : 'Dahbed ko‘chasi 11, Samarqand'))
+      })
+    })
+  }
+})
+
+describe('Google Analytics 4', () => {
+  it('loads gtag with the configured id and nothing else', () => {
+    assert.match(WITH_GA.uz, /<script async src="https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=G-NSE5CPZDTC">/)
+    assert.match(WITH_GA.uz, /gtag\('config', gaId\)/)
+    assert.equal(all(WITH_GA.uz, /(googletagmanager\.com)/g).length, 1)
+  })
+
+  it('reports phone and Telegram clicks, and a submitted request', () => {
+    assert.match(WITH_GA.uz, /'click_phone'/)
+    assert.match(WITH_GA.uz, /'click_telegram'/)
+    assert.match(WITH_GA.all, /generate_lead/)
+  })
+
+  it('never puts a name, a phone number or a message in an event', () => {
+    const lead = WITH_GA.all.match(/generate_lead['"`],\s*\{([^}]*)\}/)?.[1] ?? ''
+    assert.match(lead, /^\s*page_language:/)
+    assert.doesNotMatch(lead, /name|phone|message|business/i)
+    assert.match(WITH_GA.uz, /gtag\('event', name, \{ link_location: area, page_language: document\.documentElement\.lang \}\)/)
+  })
+
+  it('ignores an id that is not shaped like one', () => {
+    assert.doesNotMatch(WITH_BAD_GA, /googletagmanager|alert\(1\)/)
   })
 })
 

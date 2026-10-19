@@ -220,6 +220,12 @@ const field =
           body: JSON.stringify({ ...data, elapsed: Date.now() - opened, source: whereFrom() }),
         })
         if (response.ok) {
+          // A real request is a conversion; the language is all that is recorded.
+          ;(window as unknown as { gtag?: (...args: unknown[]) => void }).gtag?.(
+            'event',
+            'generate_lead',
+            { page_language: form.dataset.lang ?? '' },
+          )
           show(form.dataset.success ?? '', true)
           form.reset()
         } else {

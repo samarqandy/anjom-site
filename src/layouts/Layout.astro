@@ -4,7 +4,7 @@ import '../styles/global.css'
 import fontLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url'
 import fontCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url'
 
-import { site } from '../config'
+import { company, gaId, site } from '../config'
 import { alternatesFor } from '../seo'
 import type { Content } from '../i18n/uz'
 
@@ -25,6 +25,20 @@ const alternates = noindex ? [] : alternatesFor(t.path)
 const primaryFont = t.lang === 'ru' ? fontCyrillic : fontLatin
 const ogImage = new URL(`/og-${t.lang}.png`, site.url).toString()
 
+// Who makes ANJOM, with the address in the language of the page.
+const maker = { '@type': 'Organization', name: company.name, url: company.url }
+const address = company.address[t.lang]
+const parent = {
+  ...maker,
+  telephone: site.contacts.phone,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: address.street,
+    addressLocality: address.locality,
+    addressCountry: company.country,
+  },
+}
+
 const structured = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -34,6 +48,8 @@ const structured = {
       name: site.name,
       url: site.url,
       logo: new URL('/logo.png', site.url).toString(),
+      telephone: site.contacts.phone,
+      parentOrganization: parent,
     },
     {
       '@type': 'WebSite',
@@ -54,7 +70,8 @@ const structured = {
       description,
       // Only what the product does today; no price, rating or review is claimed.
       featureList: t.meta.features,
-      publisher: { '@id': `${site.url}/#org` },
+      publisher: maker,
+      creator: maker,
       isPartOf: { '@id': `${site.url}/#website` },
     },
   ],
@@ -95,6 +112,33 @@ const structured = {
     <meta name="twitter:card" content="summary_large_image" />
 
     {!noindex && <script type="application/ld+json" set:html={JSON.stringify(structured)} />}
+    {
+      gaId && (
+        <>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+          <script is:inline define:vars={{ gaId }}>
+            window.dataLayer = window.dataLayer || []
+            function gtag() { dataLayer.push(arguments) }
+            window.gtag = gtag
+            gtag('js', new Date())
+            gtag('config', gaId)
+
+            // Two things visitors do besides filling in the form: ring, or write.
+            // Only where the click happened and the page language are sent —
+            // never a name, a number or a message.
+            document.addEventListener('click', function (event) {
+              var link = event.target instanceof Element ? event.target.closest('a[href]') : null
+              if (!link) return
+              var href = link.getAttribute('href') || ''
+              var name = href.indexOf('tel:') === 0 ? 'click_phone' : /^https?:\/\/t\.me\//.test(href) ? 'click_telegram' : ''
+              if (!name) return
+              var area = link.closest('footer') ? 'footer' : (link.closest('section[id]') || {}).id || 'header'
+              gtag('event', name, { link_location: area, page_language: document.documentElement.lang })
+            })
+          </script>
+        </>
+      )
+    }
   </head>
   <body class="min-h-screen">
     <slot />

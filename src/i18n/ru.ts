@@ -467,6 +467,8 @@ export const ru: Content = {
 
   footer: {
     tagline: 'Система для проката.',
+    productBefore: 'Продукт ',
+    productAfter: '',
     country: 'Узбекистан',
     rights: 'Все права защищены.',
   },
