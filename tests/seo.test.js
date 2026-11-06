@@ -19,7 +19,7 @@ const SITE = 'https://anjom.uz'
 const build = (env = {}) =>
   execFileSync('npx', ['astro', 'build'], {
     stdio: 'ignore',
-    env: { ...process.env, PUBLIC_GA_ID: '', ...env },
+    env: { ...process.env, PUBLIC_GA_ID: '', PUBLIC_YM_ID: '', ...env },
   })
 
 /** Everything a build emitted that a browser could run: pages and bundled scripts. */
@@ -36,9 +36,9 @@ const emitted = () => {
 
 // Three builds, in this order: with a measurement id, with a malformed one, and
 // without (the default every other test below reads).
-build({ PUBLIC_GA_ID: 'G-NSE5CPZDTC' })
+build({ PUBLIC_GA_ID: 'G-NSE5CPZDTC', PUBLIC_YM_ID: '114112279' })
 const WITH_GA = { uz: readFileSync('dist/index.html', 'utf8'), all: emitted() }
-build({ PUBLIC_GA_ID: 'x"></script><script>alert(1)</script>' })
+build({ PUBLIC_GA_ID: 'x"></script><script>alert(1)</script>', PUBLIC_YM_ID: '1);alert(2' })
 const WITH_BAD_GA = readFileSync('dist/index.html', 'utf8')
 build()
 
@@ -159,7 +159,11 @@ describe('every public page', () => {
       })
 
       it('loads no analytics unless a measurement id is configured', () => {
-        assert.doesNotMatch(html(), /googletagmanager|gtag\(/)
+        assert.doesNotMatch(html(), /googletagmanager|gtag\(|mc\.yandex/)
+      })
+
+      it('carries the Yandex Webmaster ownership tag', () => {
+        assert.match(html(), /<meta name="yandex-verification" content="b994ea988ec24def">/)
       })
 
       it('has social metadata with an image that exists', () => {
@@ -292,6 +296,19 @@ describe('Google Analytics 4', () => {
 
   it('ignores an id that is not shaped like one', () => {
     assert.doesNotMatch(WITH_BAD_GA, /googletagmanager|alert\(1\)/)
+  })
+})
+
+describe('Yandex Metrica', () => {
+  it('loads tag.js once with the configured counter and a noscript pixel', () => {
+    assert.equal(all(WITH_GA.uz, /(mc\.yandex\.ru\/metrika\/tag\.js)/g).length, 1)
+    assert.match(WITH_GA.uz, /114112279/)
+    assert.match(WITH_GA.uz, /ym\(Number\(ymId\), 'init'/)
+    assert.match(WITH_GA.uz, /<noscript><div><img src="https:\/\/mc\.yandex\.ru\/watch\/114112279"/)
+  })
+
+  it('ignores a counter id that is not digits', () => {
+    assert.doesNotMatch(WITH_BAD_GA, /mc\.yandex|alert\(2\)/)
   })
 })
 

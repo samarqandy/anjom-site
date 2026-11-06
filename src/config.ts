@@ -48,6 +48,16 @@ export const company = {
 const rawGaId = import.meta.env.PUBLIC_GA_ID ?? ''
 export const gaId: string = /^G-[A-Z0-9]{6,12}$/.test(rawGaId) ? rawGaId : ''
 
+/**
+ * Yandex Metrica counter id, from the PUBLIC_YM_ID environment variable — the
+ * same rule as the GA id: only digits are accepted, anything else loads nothing.
+ */
+const rawYmId = import.meta.env.PUBLIC_YM_ID ?? ''
+export const ymId: string = /^\d{6,10}$/.test(rawYmId) ? rawYmId : ''
+
+/** Yandex Webmaster ownership code (public; a <meta> tag on every page). */
+export const yandexVerification = 'b994ea988ec24def'
+
 export function telegramLink(username: string, text?: string): string {
   const base = `https://t.me/${username.replace(/^@/, '')}`
   return text ? `${base}?text=${encodeURIComponent(text)}` : base
